@@ -47,31 +47,89 @@ for the `rabbit` application to include `rabbit_auth_backend_cache`.
 `auth_backends` is a list of authentication providers to try in order.
 
 
-So a configuration fragment that enables this plugin *only* would look like:
+So a configuration fragment that enables this plugin *only* (this is merely an example) would look like this:
 
-    [{rabbit, [{auth_backends, [rabbit_auth_backend_cache]}]}].
+``` erlang
+[
+  {rabbit, [
+            {auth_backends, [rabbit_auth_backend_cache]}
+            ]
+  }
+].
+```
 
 To configure upstream auth backend, you should use `cached_backend` configuration item
 for the `rabbitmq_auth_backend_cache` application.
 
-Configuration that uses LDAP auth backend:
+The following configuration uses the LDAP backend for both authentication and authorization
+and wraps it with caching:
 
-    [{rabbitmq_auth_backend_cache, [{cached_backend, rabbit_auth_backend_ldap}]}].
+``` erlang
+[
+  {rabbit, [
+    %% ...
+  ]},
+  {rabbitmq_auth_backend_cache, [
+                                  {cached_backend, rabbit_auth_backend_ldap}
+                                ]},
+  {rabbit_auth_backend_ldap, [
+    %% ...
+  ]},
+].
+```
+
+The following example combines this backend with the [rabbitmq-auth-backend-http]() and its example
+Spring Boot application, and falls back to the internal backend for all requests that the HTTP backend and cache
+do not report success for:
+
+``` erlang
+[
+ {rabbit, [
+           {auth_backends, [rabbit_auth_backend_cache, rabbit_auth_backend_internal]}
+          ]
+ },
+ {rabbitmq_auth_backend_cache, [
+                                {cached_backend, rabbit_auth_backend_http}
+                               ]
+  },
+  {rabbitmq_auth_backend_http, [{http_method,   post},
+                                {user_path,     "http://127.0.0.1:8080/auth/user"},
+                                {vhost_path,    "http://127.0.0.1:8080/auth/vhost"},
+                                {resource_path, "http://127.0.0.1:8080/auth/resource"}
+                               ]
+  }
+].
+```
 
 It is still possible to [use different backends for authorization and authentication](https://www.rabbitmq.com/access-control.html).
 
 The following example configures plugin to use LDAP backend for authentication
 but internal backend for authorisation:
 
-    [{rabbitmq_auth_backend_cache, [{cached_backend, {rabbit_auth_backend_ldap,
-                                                      rabbit_auth_backend_internal}}]}].
+``` erlang
+[
+  {rabbit, [
+    %% ...
+  ]},
+  {rabbitmq_auth_backend_cache, [{cached_backend, {rabbit_auth_backend_ldap,
+                                                  rabbit_auth_backend_internal}}]}].
+```
 
 ## Cache Configuration
 
 You can configure TTL for cache items, by using `cache_ttl` configuration item, specified in **milliseconds**
 
-    [{rabbitmq_auth_backend_cache, [{cached_backend, rabbit_auth_backend_ldap}
-                                    {cache_ttl, 5000}]}].
+``` erlang
+[
+  {rabbit, [
+    %% ...
+  ]},
+  {rabbitmq_auth_backend_cache, [
+                                 {cached_backend, rabbit_auth_backend_ldap},
+                                 {cache_ttl, 5000}
+  ]}
+].
+```
 
 You can also use a custom cache module to store cached requests. This module
 should be an erlang module implementing `rabbit_auth_cache` behaviour and (optionally)
@@ -85,7 +143,7 @@ This repository provides several implementations:
    uses a separate process for garbage collection.
  * `rabbit_auth_cache_ets_segmented_stateless` same as previous, but with minimal use of `gen_server` state, using ets tables to store information about segments.
 
-To specify module for caching you should use `cache_module` configuration item and 
+To specify module for caching you should use `cache_module` configuration item and
 specify start args with `cache_module_args`.
 Start args should be list of arguments passed to module `start_link` function
 
