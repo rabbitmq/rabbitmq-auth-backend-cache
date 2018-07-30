@@ -47,7 +47,8 @@ for the `rabbit` application to include `rabbit_auth_backend_cache`.
 `auth_backends` is a list of authentication providers to try in order.
 
 
-So a configuration fragment that enables this plugin *only* (this is merely an example) would look like this:
+So a configuration fragment that enables this plugin *only* (this example is intentionally incomplete)
+would look like this:
 
 ``` erlang
 [
@@ -58,8 +59,8 @@ So a configuration fragment that enables this plugin *only* (this is merely an e
 ].
 ```
 
-To configure upstream auth backend, you should use `cached_backend` configuration item
-for the `rabbitmq_auth_backend_cache` application.
+This plugin wraps another auth backend (an "upstream" one) to reduce load on it.
+To configure an upstream backend, use the `rabbitmq_auth_backend_cache.cached_backend` configuration key.
 
 The following configuration uses the LDAP backend for both authentication and authorization
 and wraps it with caching:
