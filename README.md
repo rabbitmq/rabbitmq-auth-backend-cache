@@ -78,7 +78,7 @@ and wraps it with caching:
 ].
 ```
 
-The following example combines this backend with the [rabbitmq-auth-backend-http]() and its example
+The following example combines this backend with the [rabbitmq-auth-backend-http](https://github.com/rabbitmq/rabbitmq-auth-backend-http/tree/v3.6.x) and its example
 Spring Boot application, and falls back to the internal backend for all requests that the HTTP backend and cache
 do not report success for:
 
