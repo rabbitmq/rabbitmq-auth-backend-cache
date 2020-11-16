@@ -1,7 +1,9 @@
 # RabbitMQ Access Control Cache Plugin
 
-This plugin provides a caching layer for [access control operations](https://rabbitmq.com/access-control.html)
-performed by RabbitMQ nodes.
+## This was migrated to https://github.com/rabbitmq/rabbitmq-server
+
+This repository has been moved to the main unified RabbitMQ "monorepo", including all open issues. You can find the source under [/deps/rabbitmq_auth_backend_cache](https://github.com/rabbitmq/rabbitmq-server/tree/master/deps/rabbitmq_auth_backend_cache).
+All issues have been transferred.
 
 ## Project Maturity
 
@@ -9,8 +11,12 @@ As of 3.7.0, this plugin is distributed with RabbitMQ.
 
 ## Overview
 
+This plugin provides a caching layer for [access control operations](https://rabbitmq.com/access-control.html)
+performed by RabbitMQ nodes.
+
 This plugin provides a way to cache [authentication and authorization backend](https://rabbitmq.com/access-control.html)
 results for a configurable amount of time.
+
 It's not an independent auth backend but a caching layer for existing backends
 such as the built-in, [LDAP](https://github.com/rabbitmq/rabbitmq-auth-backend-ldap), or [HTTP](https://github.com/rabbitmq/rabbitmq-auth-backend-http)
 ones.
